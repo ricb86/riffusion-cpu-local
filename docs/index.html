@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riffusion Local (CPU) — como usar</title>
+<meta name="description" content="Gere música com IA 100% local em CPU, sem CUDA/ROCm: instalação sem sudo, interface em português e desempenho medido.">
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #12131a;
+    color: #e9e9ee;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; justify-content: flex-end; gap: 1rem;
+    padding: .7rem 1.25rem;
+    background: rgba(18, 19, 26, .82);
+    border-bottom: 1px solid #23252f;
+    backdrop-filter: blur(8px);
+  }
+  header a { color: #e0a44a; text-decoration: none; font-weight: 600; font-size: .9rem; }
+  header a:hover { text-decoration: underline; }
+  main { max-width: 880px; margin: 0 auto; padding: 2.25rem 1.25rem 4rem; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 1rem; letter-spacing: -.02em; }
+  h2 { font-size: 1.35rem; margin: 2.25rem 0 .75rem; padding-top: .5rem; border-top: 1px solid #23252f; }
+  h3 { font-size: 1.08rem; margin: 1.5rem 0 .5rem; }
+  p, li { color: #d7d7de; }
+  a { color: #e0a44a; }
+  strong { color: #fff; }
+  figure { margin: 1.5rem 0 2rem; }
+  img { max-width: 100%; height: auto; border-radius: 12px; border: 1px solid #2a2d3a; display: block; }
+  code {
+    background: #1c1e27; border: 1px solid #2a2d3a; border-radius: 5px;
+    padding: .12em .38em; font-size: .88em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  pre { background: #1c1e27; border: 1px solid #2a2d3a; border-radius: 10px; padding: 1rem 1.1rem; overflow-x: auto; }
+  pre code { background: none; border: 0; padding: 0; font-size: .86rem; line-height: 1.55; }
+  blockquote {
+    margin: 1.25rem 0; padding: .6rem 1rem; color: #c9c9d1;
+    background: #181a23; border-left: 3px solid #e0a44a; border-radius: 0 8px 8px 0;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: .93rem; display: block; overflow-x: auto; }
+  th, td { border: 1px solid #2a2d3a; padding: .55rem .7rem; text-align: left; vertical-align: top; }
+  th { background: #1c1e27; color: #fff; }
+  hr { border: 0; border-top: 1px solid #23252f; margin: 2rem 0; }
+  footer { border-top: 1px solid #23252f; padding: 2rem 1.25rem; text-align: center; color: #8b8d99; font-size: .85rem; }
+  footer a { color: #b9bac4; }
+  @media (max-width: 600px) {
+    main { padding-top: 1.5rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <a href="https://github.com/ricb86/riffusion-cpu-local">Repositório no GitHub ↗</a>
+</header>
+<main>
+<article class="markdown-body">
+<h1 id="riffusion-local-como-usar">🎵 Riffusion Local — como usar</h1>
+<figure><img src="screenshot.png" alt="Interface do Riffusion Local"></figure>
+<p>Geração de música com IA <strong>100% local</strong>, sem internet, no CPU (o GPU AMD RX 580 não é usado
+porque o PyTorch não tem backend Vulkan; ROCm não suporta Polaris).</p>
+<h2 id="primeira-vez-instalacao">Primeira vez (instalação)</h2>
+<pre><code class="language-bash">git clone https://github.com/ricb86/riffusion-cpu-local.git
+cd riffusion-cpu-local
+./setup.sh              # cria .venv, instala dependências e baixa o modelo (~4 GB)
+./install-desktop.sh    # opcional: atalho no menu e na área de trabalho
+</code></pre>
+<p>A instalação compila <code>tokenizers</code> e <code>safetensors</code> do zero (15–30 min) porque não existem
+wheels para Python 3.12. Não é preciso <code>sudo</code>.</p>
+<h2 id="iniciar">Iniciar</h2>
+<p><strong>Opção 1 — ícone na área de trabalho</strong></p>
+<p>Clique duas vezes em <strong>“Riffusion Local”</strong> (na Área de Trabalho ou no menu de aplicativos).
+Abre uma janela de terminal e o navegador em <code>http://127.0.0.1:8501</code>.</p>
+<p><strong>Opção 2 — terminal</strong></p>
+<pre><code class="language-bash">./run.sh          # dentro da pasta do projeto
+</code></pre>
+<p>Feche a janela do terminal (ou Ctrl+C) para encerrar o servidor.</p>
+<h2 id="gerar-musica">Gerar música</h2>
+<ol>
+<li>Escreva o prompt <strong>em inglês</strong> (o CLIP do modelo foi treinado em inglês):
+   <code>lofi hip hop beat, warm vinyl crackle, mellow piano, relaxed</code></li>
+<li>Ajuste na barra lateral:
+   - <strong>Base rítmica</strong> – o “groove” inicial (og_beat, agile, motorway, funk, rock…)
+   - <strong>Passos de difusão</strong> – 8 (rápido) até 40 (melhor). Cada passo ≈ 6 s.
+   - <strong>Guidance</strong> – o quanto seguir o prompt (7 é o padrão).
+   - <strong>Força de recriação</strong> – 0.75 padrão.
+   - <strong>Seed</strong> – mesmo número + mesmo prompt = mesmo resultado.</li>
+<li>Clique em <strong>🎧 Gerar música</strong> e aguarde (16 passos ≈ 95 s para ~5 s de áudio).</li>
+<li>O player aparece na tela e o arquivo é salvo em <code>~/AI-Music/outputs/</code>.</li>
+</ol>
+<p>Dicas de prompt: cite <strong>gênero + instrumentos + clima</strong>.
+Ex.: <code>aggressive drum and bass, distorted bass, fast breakbeat, dark</code>
+Ex.: <code>ambient pad, slow strings, cinematic, dreamy, reverb</code></p>
+<h2 id="onde-ficam-as-coisas">Onde ficam as coisas</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Caminho</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Programa</td>
+<td>pasta do clone (ex.: <code>~/riffusion-cpu-local</code>)</td>
+</tr>
+<tr>
+<td>Modelo (4 GB)</td>
+<td><code>~/AI-Music/models/riffusion-model-v1</code></td>
+</tr>
+<tr>
+<td>Músicas geradas</td>
+<td><code>~/AI-Music/outputs</code></td>
+</tr>
+<tr>
+<td>Ambiente Python</td>
+<td><code>~/AI-Music/riffusion-hobby/.venv</code></td>
+</tr>
+<tr>
+<td>Log do servidor</td>
+<td>terminal onde o <code>run.sh</code> foi iniciado</td>
+</tr>
+</tbody>
+</table>
+<h2 id="desempenho">Desempenho</h2>
+<ul>
+<li>Máquina: Xeon E5-2580 v4 (14 núcleos), 15 GB RAM, sem GPU utilizável.</li>
+<li>512×512, float32 no CPU: <strong>~6,2 s por passo</strong>.</li>
+<li>Clipe de ~5,1 s: 8 passos ≈ 50 s · 16 passos ≈ 95 s · 30 passos ≈ 3 min.</li>
+<li>RAM: ~8 GB durante a geração (cabe nos 15 GB; há 31 GB de swap de reserva).</li>
+</ul>
+<h2 id="se-algo-der-errado">Se algo der errado</h2>
+<ul>
+<li><strong>Porta ocupada</strong>: <code>RIFFUSION_PORT=8502 ./run.sh</code></li>
+<li><strong>Modelo em outro lugar</strong>: <code>RIFFUSION_CKPT=/caminho ./run.sh</code>
+  (ou edite <code>RIFFUSION_CKPT</code> no <code>streamlit_app.py</code>).</li>
+<li><strong>Baixar/refazer o modelo</strong>: <code>./download_model.sh</code> (retoma downloads interrompidos).</li>
+<li><strong>Recriar o ambiente</strong>: veja as versões exatas em <code>requirements-lock.txt</code>.</li>
+</ul>
+<h2 id="notas-tecnicas-o-que-foi-adaptado">Notas técnicas (o que foi adaptado)</h2>
+<p>O projeto original é de 2022/2023 (Python 3.9/3.10). Para rodar em Python 3.12 neste
+micro sem <code>sudo</code>, foram necessários:</p>
+<ul>
+<li>venv criada a partir do Python 3.12 do conda (<code>py312</code>), com dependências antigas fixadas:
+  <code>transformers 4.26.1</code>, <code>diffusers 0.9.0</code>, <code>huggingface_hub 0.16.4</code>, <code>accelerate 0.18.0</code>,
+  <code>numpy 1.26.4</code>, <code>scipy 1.13.1</code>.</li>
+<li><code>tokenizers 0.13.3</code> e <code>safetensors 0.3.1</code> compilados do zero (não existem wheels para
+  cp312). Foi preciso: Rust estável + GCC/G++/binutils do conda-forge (sem root),
+  <code>pkg-config</code> e headers do OpenSSL do conda, além de
+  <code>RUSTFLAGS="-A invalid_reference_casting"</code>.</li>
+<li><code>torch 2.6.0+cpu</code> (wheels oficiais CPU) — o wheel padrão do PyPI é CUDA e não carrega
+  sem driver NVIDIA.</li>
+<li><code>riffusion/spectrogram_converter.py</code>: removidos os parâmetros <code>max_iter</code>,
+  <code>tolerance_loss</code>, <code>tolerance_change</code> e <code>sgdargs</code> do <code>InverseMelScale</code> (extintos no
+  torchaudio 2.x).</li>
+<li><code>streamlit_app.py</code>: interface nova, em português, com player, download e histórico do
+  último resultado.</li>
+</ul>
+</article>
+</main>
+<footer>
+  Baseado em <a href="https://github.com/riffusion/riffusion-hobby">riffusion/riffusion-hobby</a> (MIT) ·
+  <a href="https://github.com/ricb86/riffusion-cpu-local">código-fonte</a>
+</footer>
+</body>
+</html>

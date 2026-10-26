@@ -6,9 +6,10 @@ porque o PyTorch não tem backend Vulkan; ROCm não suporta Polaris).
 ## Primeira vez (instalação)
 
 ```bash
-cd ~/AI-Music/riffusion-hobby
+git clone https://github.com/ricb86/riffusion-cpu-local.git
+cd riffusion-cpu-local
 ./setup.sh              # cria .venv, instala dependências e baixa o modelo (~4 GB)
-./install-desktop.sh    # opcional: cria o atalho no menu e na área de trabalho
+./install-desktop.sh    # opcional: atalho no menu e na área de trabalho
 ```
 
 A instalação compila `tokenizers` e `safetensors` do zero (15–30 min) porque não existem
@@ -24,7 +25,7 @@ Abre uma janela de terminal e o navegador em `http://127.0.0.1:8501`.
 **Opção 2 — terminal**
 
 ```bash
-~/AI-Music/riffusion-hobby/run.sh
+./run.sh          # dentro da pasta do projeto
 ```
 
 Feche a janela do terminal (ou Ctrl+C) para encerrar o servidor.
@@ -50,7 +51,7 @@ Ex.: `ambient pad, slow strings, cinematic, dreamy, reverb`
 
 | Item | Caminho |
 |---|---|
-| Programa | `~/AI-Music/riffusion-hobby` |
+| Programa | pasta do clone (ex.: `~/riffusion-cpu-local`) |
 | Modelo (4 GB) | `~/AI-Music/models/riffusion-model-v1` |
 | Músicas geradas | `~/AI-Music/outputs` |
 | Ambiente Python | `~/AI-Music/riffusion-hobby/.venv` |

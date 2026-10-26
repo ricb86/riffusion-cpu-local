@@ -37,6 +37,9 @@ when missing, because `tokenizers==0.13.3` and `safetensors==0.3.1` must be comp
 from source on Python 3.12.
 
 Portuguese guide (prompts, performance, troubleshooting): **[COMO-USAR.md](COMO-USAR.md)**
+(online: **https://ricb86.github.io/riffusion-cpu-local/**)
+
+[![Interface do Riffusion Local](docs/screenshot.png)](docs/screenshot.png)
 
 Changes from upstream:
 
