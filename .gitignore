@@ -139,3 +139,23 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# ---- Riffusion Local (CPU) ----
+# Ambiente local e toolchain
+.python/
+.toolchain/
+.toolchain-env/
+.venv/
+
+# Modelos e saídas (não versionar: ~4 GB + áudios gerados)
+models/
+outputs/
+*.wav
+*.mp3
+
+# Config local do Streamlit (contém e-mail do onboarding)
+.streamlit/credentials.toml
+
+# Logs
+server.log
+*.log

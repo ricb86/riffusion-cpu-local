@@ -19,6 +19,38 @@ This is the core repository for riffusion image and audio processing code.
  * Flask server to provide model inference via API
  * Various third party integrations
 
+---
+
+## Running locally on CPU (this fork)
+
+This fork runs Riffusion **fully offline on CPU**: no NVIDIA GPU, no CUDA, no ROCm.
+Tested on a Xeon E5-2580 v4 (14 cores), 15 GB RAM, Zorin OS 18.1 / Ubuntu 24.04.
+
+```bash
+./setup.sh      # Python 3.12 venv + pinned deps + model download (~4 GB)
+./run.sh        # Streamlit UI at http://127.0.0.1:8501
+```
+
+Optional: `./install-desktop.sh` adds a "Riffusion Local" launcher to the app menu.
+No root/sudo is required: the C/C++ toolchain and `pkg-config` come from conda-forge
+when missing, because `tokenizers==0.13.3` and `safetensors==0.3.1` must be compiled
+from source on Python 3.12.
+
+Portuguese guide (prompts, performance, troubleshooting): **[COMO-USAR.md](COMO-USAR.md)**
+
+Changes from upstream:
+
+* `riffusion/spectrogram_converter.py` — removed `InverseMelScale` arguments dropped in
+  torchaudio 2.x (`max_iter`, `tolerance_loss`, `tolerance_change`, `sgdargs`).
+* `streamlit_app.py` — new local UI (prompt interpolation, seed images, audio player,
+  download, reuse of the last spectrogram).
+* Pinned 2023-era stack that works with the original `diffusers 0.9.0` API
+  (`requirements-cpu.txt`), with CPU-only PyTorch 2.6 wheels.
+* `setup.sh`, `download_model.sh`, `run.sh`, `install-desktop.sh` — reproducible setup.
+
+Measured on the machine above: ~6.2 s per diffusion step at 512×512 float32, so a
+~5 s clip takes ~50 s with 8 steps, ~95 s with 16, ~3 min with 30 (≈8 GB RAM).
+
 Related repositories:
 * Web app: https://github.com/riffusion/riffusion-app
 * Model checkpoint: https://huggingface.co/riffusion/riffusion-model-v1
